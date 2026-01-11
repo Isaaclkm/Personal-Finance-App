@@ -9,17 +9,17 @@ export default function SideNav() {
       className="
         fixed bottom-0 left-0 z-50
         flex w-full items-center justify-around
-        border-t bg-white px-3 py-2
+        border-t bg-[#201F24] pr-3 py-2
         md:static md:h-full md:w-full md:flex-col md:justify-start md:border-none
       "
     >
       {/* Logo — hidden on mobile */}
       <Link
         href="/"
-        className="hidden md:flex mb-4 h-20 items-end justify-start rounded-md bg-blue-600 p-4"
+        className="hidden md:flex mb-1 h-10 items-end justify-start rounded-r-md p-r-1"
       >
-        <div className="w-32 text-white">
-          <AcmeLogo />
+        <div className="w-32 text-[#B3B3B3]">
+          <p>finance</p>
         </div>
       </Link>
 
