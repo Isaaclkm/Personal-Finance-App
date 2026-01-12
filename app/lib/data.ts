@@ -1,8 +1,6 @@
 import postgres from 'postgres';
 import {
-  Budget,
-  Pot,
-  Transaction,
+   users, budgets, pots, transactions 
 } from './definitions';
 import { formatCurrency } from './utils';
 
@@ -11,7 +9,7 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 // Fetch all budgets
 export async function fetchBudgets() {
   try {
-    const data = await sql<Budget[]>`
+    const data = await sql<budgets[]>`
       SELECT id, category, maximum_spend, theme, amount 
       FROM budgets 
       ORDER BY category ASC`;
@@ -26,7 +24,7 @@ export async function fetchBudgets() {
 // Fetch all savings pots
 export async function fetchPots() {
   try {
-    const data = await sql<Pot[]>`
+    const data = await sql<pots[]>`
       SELECT id, name, target, theme, total 
       FROM pots 
       ORDER BY name ASC`;
@@ -41,7 +39,7 @@ export async function fetchPots() {
 // Fetch the 5 most recent transactions for the dashboard
 export async function fetchLatestTransactions() {
   try {
-    const data = await sql<Transaction[]>`
+    const data = await sql<transactions[]>`
       SELECT id, amount, date, category, recipient, is_income
       FROM transactions
       ORDER BY date DESC
@@ -91,7 +89,7 @@ export async function fetchFilteredTransactions(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const transactions = await sql<Transaction[]>`
+    const transactions = await sql<transactions[]>`
       SELECT
         id,
         amount,

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import postgres from 'postgres';
-import { invoices, customers, revenue, users } from '../lib/placeholder-data';
+import { users, budgets, pots, transactions } from '../lib/placeholder-data';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
@@ -29,89 +29,88 @@ async function seedUsers() {
   return insertedUsers;
 }
 
-async function seedInvoices() {
-  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
+async function seedBudgets() {
   await sql`
-    CREATE TABLE IF NOT EXISTS invoices (
+    CREATE TABLE IF NOT EXISTS budgets (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-      customer_id UUID NOT NULL,
-      amount INT NOT NULL,
-      status VARCHAR(255) NOT NULL,
-      date DATE NOT NULL
+      category VARCHAR(255) NOT NULL,
+      maximum_spend INT NOT NULL,
+      theme VARCHAR(50) NOT NULL,
+      amount INT NOT NULL
     );
   `;
 
-  const insertedInvoices = await Promise.all(
-    invoices.map(
-      (invoice) => sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
-        VALUES (${invoice.customer_id}, ${invoice.amount}, ${invoice.status}, ${invoice.date})
-        ON CONFLICT (id) DO NOTHING;
-      `,
-    ),
+  const insertedBudgets = await Promise.all(
+    budgets.map((budget) => sql`
+      INSERT INTO budgets (id, category, maximum_spend, theme, amount)
+      VALUES (${budget.id}, ${budget.category}, ${budget.maximum_spend}, ${budget.theme}, ${budget.amount})
+      ON CONFLICT (id) DO NOTHING;
+    `),
   );
 
-  return insertedInvoices;
+  return insertedBudgets;
 }
 
-async function seedCustomers() {
-  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
+async function seedPots() {
   await sql`
-    CREATE TABLE IF NOT EXISTS customers (
+    CREATE TABLE IF NOT EXISTS pots (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
-      email VARCHAR(255) NOT NULL,
-      image_url VARCHAR(255) NOT NULL
+      target INT NOT NULL,
+      theme VARCHAR(50) NOT NULL,
+      total INT NOT NULL
     );
   `;
 
-  const insertedCustomers = await Promise.all(
-    customers.map(
-      (customer) => sql`
-        INSERT INTO customers (id, name, email, image_url)
-        VALUES (${customer.id}, ${customer.name}, ${customer.email}, ${customer.image_url})
-        ON CONFLICT (id) DO NOTHING;
-      `,
-    ),
+  const insertedPots = await Promise.all(
+    pots.map((pot) => sql`
+      INSERT INTO pots (id, name, target, theme, total)
+      VALUES (${pot.id}, ${pot.name}, ${pot.target}, ${pot.theme}, ${pot.total})
+      ON CONFLICT (id) DO NOTHING;
+    `),
   );
 
-  return insertedCustomers;
+  return insertedPots;
 }
 
-async function seedRevenue() {
+async function seedTransactions() {
   await sql`
-    CREATE TABLE IF NOT EXISTS revenue (
-      month VARCHAR(4) NOT NULL UNIQUE,
-      revenue INT NOT NULL
+    CREATE TABLE IF NOT EXISTS transactions (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      amount INT NOT NULL,
+      date DATE NOT NULL,
+      category VARCHAR(255) NOT NULL,
+      recipient VARCHAR(255) NOT NULL,
+      is_income BOOLEAN NOT NULL DEFAULT false
     );
   `;
 
-  const insertedRevenue = await Promise.all(
-    revenue.map(
-      (rev) => sql`
-        INSERT INTO revenue (month, revenue)
-        VALUES (${rev.month}, ${rev.revenue})
-        ON CONFLICT (month) DO NOTHING;
-      `,
-    ),
+  const insertedTransactions = await Promise.all(
+    transactions.map((t) => sql`
+      INSERT INTO transactions (id, amount, date, category, recipient, is_income)
+      VALUES (${t.id}, ${t.amount}, ${t.date}, ${t.category}, ${t.recipient}, ${t.is_income})
+      ON CONFLICT (id) DO NOTHING;
+    `),
   );
 
-  return insertedRevenue;
+  return insertedTransactions;
 }
 
 export async function GET() {
   try {
-    const result = await sql.begin((sql) => [
-      seedUsers(),
-      seedCustomers(),
-      seedInvoices(),
-      seedRevenue(),
-    ]);
+    await sql.begin(async (sql) => {
+      // Clear out the failed tables first
+      await sql`DROP TABLE IF EXISTS budgets, pots, transactions CASCADE`;
+      
+      await seedUsers();
+      await seedBudgets();
+      await seedPots();
+      await seedTransactions();
+    });
 
     return Response.json({ message: 'Database seeded successfully' });
-  } catch (error) {
-    return Response.json({ error }, { status: 500 });
+  } catch (error: any) {
+    console.error('Seeding Error:', error);
+    return Response.json({ error: error.message }, { status: 500 });
   }
 }
