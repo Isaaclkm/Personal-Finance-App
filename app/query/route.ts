@@ -2,12 +2,11 @@ import postgres from 'postgres';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
-async function listInvoices() {
+async function listBudgets() {
 	const data = await sql`
-    SELECT invoices.amount, customers.name
-    FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
-    WHERE invoices.amount = 666;
+    SELECT id, category, maximum_spend, theme, amount 
+    FROM budgets 
+    WHERE budgets.id = 'b10544b2-4001-4271-9855-fec4b6a6442a';
   `;
 
 	return data;
@@ -19,7 +18,7 @@ export async function GET() {
   //     'Uncomment this file and remove this line. You can delete this file when you are finished.',
   // });
   try {
-  	return Response.json(await listInvoices());
+  	return Response.json(await listBudgets());
   } catch (error) {
   	return Response.json({ error }, { status: 500 });
   }

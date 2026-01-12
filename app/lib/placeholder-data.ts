@@ -1,5 +1,3 @@
-// This file contains placeholder data that you'll be replacing with real data in the Data Fetching chapter:
-// https://nextjs.org/learn/dashboard-app/fetching-data
 const users = [
   {
     id: '410544b2-4001-4271-9855-fec4b6a6442a',
@@ -9,139 +7,80 @@ const users = [
   },
 ];
 
-const customers = [
+const budgets = [
   {
-    id: 'd6e15727-9fe1-4961-8c5b-ea44a9bd81aa',
-    name: 'Evil Rabbit',
-    email: 'evil@rabbit.com',
-    image_url: '/customers/evil-rabbit.png',
+    id: 'b10544b2-4001-4271-9855-fec4b6a6442a',
+    category: 'Entertainment',
+    maximum_spend: 5000, // stored in cents (e.g., $50.00)
+    theme: '#277C78',
+    amount: 1500,
   },
   {
-    id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
-    name: 'Delba de Oliveira',
-    email: 'delba@oliveira.com',
-    image_url: '/customers/delba-de-oliveira.png',
+    id: 'b10544b2-4001-4271-9855-fec4b6a6442b',
+    category: 'Bills',
+    maximum_spend: 75000,
+    theme: '#82C9D7',
+    amount: 75000,
   },
   {
-    id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
-    name: 'Lee Robinson',
-    email: 'lee@robinson.com',
-    image_url: '/customers/lee-robinson.png',
-  },
-  {
-    id: '76d65c26-f784-44a2-ac19-586678f7c2f2',
-    name: 'Michael Novotny',
-    email: 'michael@novotny.com',
-    image_url: '/customers/michael-novotny.png',
-  },
-  {
-    id: 'CC27C14A-0ACF-4F4A-A6C9-D45682C144B9',
-    name: 'Amy Burns',
-    email: 'amy@burns.com',
-    image_url: '/customers/amy-burns.png',
-  },
-  {
-    id: '13D07535-C59E-4157-A011-F8D2EF4E0CBB',
-    name: 'Balazs Orban',
-    email: 'balazs@orban.com',
-    image_url: '/customers/balazs-orban.png',
+    id: 'b10544b2-4001-4271-9855-fec4b6a6442c',
+    category: 'Dining Out',
+    maximum_spend: 30000,
+    theme: '#F2CDAC',
+    amount: 21250,
   },
 ];
 
-const invoices = [
+const pots = [
   {
-    customer_id: customers[0].id,
-    amount: 15795,
-    status: 'pending',
-    date: '2022-12-06',
+    id: 'p10544b2-4001-4271-9855-fec4b6a6442a',
+    name: 'Savings',
+    target: 200000, // $2,000.00
+    theme: '#277C78',
+    total: 159000,
   },
   {
-    customer_id: customers[1].id,
-    amount: 20348,
-    status: 'pending',
-    date: '2022-11-14',
+    id: 'p10544b2-4001-4271-9855-fec4b6a6442b',
+    name: 'New Laptop',
+    target: 100000,
+    theme: '#626070',
+    total: 10000,
+  },
+];
+
+const transactions = [
+  {
+    id: 't10544b2-4001-4271-9855-fec4b6a6442a',
+    amount: 4599,
+    date: '2024-01-12',
+    category: 'Entertainment',
+    recipient: 'Netflix',
+    is_income: false,
   },
   {
-    customer_id: customers[4].id,
-    amount: 3040,
-    status: 'paid',
-    date: '2022-10-29',
+    id: 't10544b2-4001-4271-9855-fec4b6a6442b',
+    amount: 250000,
+    date: '2024-01-10',
+    category: 'Salary',
+    recipient: 'Tech Corp',
+    is_income: true,
   },
   {
-    customer_id: customers[3].id,
-    amount: 44800,
-    status: 'paid',
-    date: '2023-09-10',
-  },
-  {
-    customer_id: customers[5].id,
-    amount: 34577,
-    status: 'pending',
-    date: '2023-08-05',
-  },
-  {
-    customer_id: customers[2].id,
-    amount: 54246,
-    status: 'pending',
-    date: '2023-07-16',
-  },
-  {
-    customer_id: customers[0].id,
-    amount: 666,
-    status: 'pending',
-    date: '2023-06-27',
-  },
-  {
-    customer_id: customers[3].id,
-    amount: 32545,
-    status: 'paid',
-    date: '2023-06-09',
-  },
-  {
-    customer_id: customers[4].id,
+    id: 't10544b2-4001-4271-9855-fec4b6a6442c',
     amount: 1250,
-    status: 'paid',
-    date: '2023-06-17',
+    date: '2024-01-08',
+    category: 'Dining Out',
+    recipient: 'Starbucks',
+    is_income: false,
   },
   {
-    customer_id: customers[5].id,
-    amount: 8546,
-    status: 'paid',
-    date: '2023-06-07',
-  },
-  {
-    customer_id: customers[1].id,
-    amount: 500,
-    status: 'paid',
-    date: '2023-08-19',
-  },
-  {
-    customer_id: customers[5].id,
-    amount: 8945,
-    status: 'paid',
-    date: '2023-06-03',
-  },
-  {
-    customer_id: customers[2].id,
-    amount: 1000,
-    status: 'paid',
-    date: '2022-06-05',
+    id: 't10544b2-4001-4271-9855-fec4b6a6442d',
+    amount: 8000,
+    date: '2024-01-05',
+    category: 'Bills',
+    recipient: 'Verizon',
+    is_income: false,
   },
 ];
 
-const revenue = [
-  { month: 'Jan', revenue: 2000 },
-  { month: 'Feb', revenue: 1800 },
-  { month: 'Mar', revenue: 2200 },
-  { month: 'Apr', revenue: 2500 },
-  { month: 'May', revenue: 2300 },
-  { month: 'Jun', revenue: 3200 },
-  { month: 'Jul', revenue: 3500 },
-  { month: 'Aug', revenue: 3700 },
-  { month: 'Sep', revenue: 2500 },
-  { month: 'Oct', revenue: 2800 },
-  { month: 'Nov', revenue: 3000 },
-  { month: 'Dec', revenue: 4800 },
-];
-
-export { users, customers, invoices, revenue };
+export { users, budgets, pots, transactions };

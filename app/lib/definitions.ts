@@ -1,7 +1,4 @@
-// This file contains type definitions for your data.
-// It describes the shape of the data, and what data type each property should accept.
-// For simplicity of teaching, we're manually defining these types.
-// However, these types are generated automatically if you're using an ORM such as Prisma.
+
 export type User = {
   id: string;
   name: string;
@@ -9,80 +6,35 @@ export type User = {
   password: string;
 };
 
-export type Customer = {
+export type Budget = {
   id: string;
-  name: string;
-  email: string;
-  image_url: string;
+  category: string; // The category this budget applies to (e.g., 'Entertainment')
+  maximum_spend: number;
+  theme: string; // Hex code or color name (e.g., '#277C78')
+  // Note: amount is often calculated dynamically, 
+  // but included here as current spend per your requirement.
+  amount: number; 
 };
 
-export type Invoice = {
+export type Pot = {
   id: string;
-  customer_id: string;
+  name: string;
+  target: number;
+  theme: string;
+  total: number; // Current balance in the pot
+};
+
+export type Transaction = {
+  id: string;
   amount: number;
-  date: string;
-  // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
-  status: 'pending' | 'paid';
+  date: string; // ISO string format
+  category: string;
+  recipient: string; // The person or company paid/received from
+  is_income: boolean; // Useful for styling (green vs black)
 };
 
-export type Revenue = {
-  month: string;
-  revenue: number;
-};
-
-export type LatestInvoice = {
-  id: string;
-  name: string;
-  image_url: string;
-  email: string;
-  amount: string;
-};
-
-// The database returns a number for amount, but we later format it to a string with the formatCurrency function
-export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
-  amount: number;
-};
-
-export type InvoicesTable = {
-  id: string;
-  customer_id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  date: string;
-  amount: number;
-  status: 'pending' | 'paid';
-};
-
-export type CustomersTableType = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: number;
-  total_paid: number;
-};
-
-export type FormattedCustomersTable = {
-  id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  total_invoices: number;
-  total_pending: string;
-  total_paid: string;
-};
-
-export type CustomerField = {
-  id: string;
-  name: string;
-};
-
-export type InvoiceForm = {
-  id: string;
-  customer_id: string;
-  amount: number;
-  status: 'pending' | 'paid';
+// Optional: Helper type for UI tables where you might need 
+// to display the theme color alongside the transaction
+export type TransactionWithTheme = Transaction & {
+  theme?: string;
 };
