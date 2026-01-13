@@ -6,7 +6,7 @@ async function listBudgets() {
 	const data = await sql`
     SELECT id, category, maximum_spend, theme, amount 
     FROM budgets 
-    WHERE budgets.id = 'b10544b2-4001-4271-9855-fec4b6a6442a';
+    WHERE budgets.id = '627b7890-8488-444a-9c2b-6893e25b184b';
   `;
 
 	return data;

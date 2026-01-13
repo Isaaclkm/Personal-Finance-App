@@ -98,19 +98,25 @@ async function seedTransactions() {
 
 export async function GET() {
   try {
-    await sql.begin(async (sql) => {
-      // Clear out the failed tables first
-      await sql`DROP TABLE IF EXISTS budgets, pots, transactions CASCADE`;
-      
-      await seedUsers();
-      await seedBudgets();
-      await seedPots();
-      await seedTransactions();
-    });
+    // 1. Drop tables individually (outside the transaction helper)
+    // This breaks any locks from previous failed attempts
+    await sql`DROP TABLE IF EXISTS transactions CASCADE`;
+    await sql`DROP TABLE IF EXISTS budgets CASCADE`;
+    await sql`DROP TABLE IF EXISTS pots CASCADE`;
+
+    // 2. Run seeds one by one
+    await seedUsers();
+    console.log('Users seeded');
+    await seedBudgets();
+    console.log('Budgets seeded');
+    await seedPots();
+    console.log('Pots seeded');
+    await seedTransactions();
+    console.log('Transactions seeded');
 
     return Response.json({ message: 'Database seeded successfully' });
   } catch (error: any) {
-    console.error('Seeding Error:', error);
+    console.error('Seeding Error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
