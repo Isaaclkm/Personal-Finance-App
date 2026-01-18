@@ -7,16 +7,8 @@ import { z } from 'zod';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
-// --- EXISTING INVOICE SCHEMA ---
-const FormSchema = z.object({
-  id: z.string(),
-  customerId: z.string({ invalid_type_error: 'Please select a customer.' }),
-  amount: z.coerce.number().gt(0, { message: 'Please enter an amount greater than $0.' }),
-  status: z.enum(['pending', 'paid'], { invalid_type_error: 'Please select an invoice status.' }),
-  date: z.string(),
-});
+// --- SCHEMAS ---
 
-// --- NEW POT SCHEMA ---
 const PotSchema = z.object({
   id: z.string(),
   name: z.string().min(1, { message: 'Please enter a name for your pot.' }),
@@ -25,28 +17,59 @@ const PotSchema = z.object({
   total: z.number(),
 });
 
-const CreatePot = PotSchema.omit({ id: true, total: true });
+const BudgetSchema = z.object({
+  id: z.string(),
+  category: z.string().min(1, { message: 'Please select a category.' }), 
+  maximum_spend: z.coerce.number().gt(0, { message: 'Please enter an amount greater than $0.' }),
+  theme: z.string({ invalid_type_error: 'Please select a theme.' }),
+  amount: z.number(),
+});
 
-// State type for Form handling
-export type State = {
+// Validation for Creating (omitting internal DB fields)
+const CreatePot = PotSchema.omit({ id: true, total: true });
+const CreateBudget = BudgetSchema.omit({ id: true, amount: true });
+
+// Flexible State type to handle different forms
+// Base type for shared properties
+export type BaseState = {
+  message?: string | null;
+};
+
+export type PotState = BaseState & {
   errors?: {
     name?: string[];
     target?: string[];
     theme?: string[];
   };
-  message?: string | null;
 };
 
-// --- NEW CREATE POT ACTION ---
-export async function createPot(prevState: State, formData: FormData) {
-  // Validate form fields using Zod
+export type BudgetState = BaseState & {
+  errors?: {
+    category?: string[];
+    maximum_spend?: string[];
+    theme?: string[];
+  };
+};
+
+export type TransactionState = BaseState & {
+  errors?: {
+    recipient?: string[];
+    category?: string[];
+    amount?: string[];
+    is_income?: string[];
+  };
+};
+
+
+// --- ACTIONS ---
+
+export async function createPot(prevState: PotState, formData: FormData) {
   const validatedFields = CreatePot.safeParse({
     name: formData.get('name'),
     target: formData.get('target'),
     theme: formData.get('theme'),
   });
 
-  // If validation fails, return errors early
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
@@ -55,7 +78,7 @@ export async function createPot(prevState: State, formData: FormData) {
   }
 
   const { name, target, theme } = validatedFields.data;
-  const initialTotal = 0; // New pots start at $0
+  const initialTotal = 0;
 
   try {
     await sql`
@@ -64,13 +87,40 @@ export async function createPot(prevState: State, formData: FormData) {
     `;
   } catch (error) {
     console.error('Database Error:', error);
-    return {
-      message: 'Database Error: Failed to Create Pot.',
-    };
+    return { message: 'Database Error: Failed to Create Pot.' };
   }
 
-  revalidatePath('/dashboard/pots'); // Adjust this path to wherever your pots are displayed
+  revalidatePath('/dashboard/pots');
   redirect('/dashboard/pots');
 }
 
-// ... rest of your existing functions (createInvoice, authenticate, etc.)
+export async function createBudget(prevState: BudgetState, formData: FormData) {
+  const validatedFields = CreateBudget.safeParse({
+    category: formData.get('category'),
+    maximum_spend: formData.get('maximum_spend'),
+    theme: formData.get('theme'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Budget.',
+    };
+  }
+
+  const { category, maximum_spend, theme } = validatedFields.data;
+  const initialAmount = 0;
+
+  try {
+    await sql`
+      INSERT INTO budgets (category, maximum_spend, theme, amount)
+      VALUES (${category}, ${maximum_spend}, ${theme}, ${initialAmount})
+    `;
+  } catch (error) {
+    console.error('Database Error:', error);
+    return { message: 'Database Error: Failed to Create Budget.' };
+  }
+
+  revalidatePath('/dashboard/budgets');
+  redirect('/dashboard/budgets');
+}

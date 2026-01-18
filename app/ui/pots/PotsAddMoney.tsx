@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useActionState } from 'react'; // In older Next.js versions use 'react-dom'
 import { createPot, PotState } from '@/app/lib/actions';
 
-interface CreatePotProps {
+interface AddMoneyProps {
   onClose: () => void;
 }
 
@@ -16,7 +16,7 @@ const THEMES = [
   { name: 'Rose', color: '#f43f5e', value: 'rose' },
 ];
 
-export default function CreatePotForm({ onClose }: CreatePotProps) {
+export default function AddMoneyForm({ onClose }: AddMoneyProps) {
   // 1. Set up the Action State
   const initialState: PotState = { message: null, errors: {} };
   const [state, formAction, isPending] = useActionState(createPot, initialState);

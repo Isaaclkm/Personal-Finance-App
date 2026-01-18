@@ -2,7 +2,7 @@ import SideNav from '@/app/ui/dashboard/sidenav';
  
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen flex-col md:flex-row">
+    <div className="flex bg-[#F8F4F0] h-screen flex-col md:flex-row">
       {/* Sidebar (desktop) */}
       <div className="hidden md:block md:w-64">
         <SideNav />
