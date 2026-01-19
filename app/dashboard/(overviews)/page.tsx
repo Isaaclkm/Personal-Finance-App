@@ -4,7 +4,9 @@ import PotsOverview from "@/app/ui/pots/PotsOverview";
 import BudgetOverview from "@/app/ui/budgets/BudgetOverviewProps";
 import TransactionTable from '@/app/ui/transactions/table';
 import { TRANSACTIONS } from '@/app/lib/placeholder-data';
-import Link from "next/link";
+import { BILLS } from "@/app/lib/placeholder-data";
+import BillsTable from "@/app/ui/recurring-bills/table";
+import SummaryCard from "@/app/ui/recurring-bills/SummaryCard";
 
 export default async function Page() {
   const [pots, budgets, cardData] = await Promise.all([
@@ -23,7 +25,6 @@ export default async function Page() {
       <div className="w-full mb-4">
           <CardWrapper />
       </div>
-
 
       {/* Main Bento Grid */}
       <div className="flex flex-col lg:flex-row w-full min-h-screen gap-6 bg-[#F8F4F0]">
@@ -61,8 +62,7 @@ export default async function Page() {
 
           {/* B2: 45% Height (Analytics) */}
           <div className="w-full h-[45%] bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-            <h2 className="font-bold text-slate-800 uppercase text-xs tracking-widest mb-4">B2 - 45% Height</h2>
-            {/* Your Analytics/Chart goes here */}
+            <SummaryCard bills={BILLS}/>
           </div>
 
         </div>

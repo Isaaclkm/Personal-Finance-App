@@ -324,6 +324,43 @@ export const TRANSACTIONS = [
   }
 ];
 
-
+export const BILLS = [
+  {
+    id: '1',
+    name: 'Bravo Zen Spa',
+    image: "/assets/images/avatars/serenity-spa-and-wellness.jpg",
+    category: 'General',
+    date: '2024-08-03T19:51:00', // Standard format
+    amount: 70,
+    isPaid: true
+  },
+  {
+    id: '2',
+    name: 'Education',
+    image: "/assets/images/avatars/elevate-education.jpg",
+    category: 'General',
+    date: '2024-08-03T19:51:00',
+    amount: 70,
+    isPaid: true
+  },
+  {
+    id: '3',
+    name: 'Spark Electric', // Changed name to match the image path
+    image: "/assets/images/avatars/spark-electric-solutions.jpg",
+    category: 'General',
+    date: '2024-08-03T19:51:00',
+    amount: 70,
+    isPaid: true
+  },
+  {
+    id: '4',
+    name: 'Delta Taxi',
+    image: "/assets/images/avatars/swift-ride-share.jpg",
+    category: 'General',
+    date: '2024-08-06T19:51:00', 
+    amount: 250,
+    isPaid: false 
+  },
+]
 
 export { users, budgets };

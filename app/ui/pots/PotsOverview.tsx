@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Pot } from '@/app/lib/definitions';
+import { publicSans } from '../fonts';
 
 interface PotsOverviewProps {
   pots: Pot[];
@@ -12,7 +13,7 @@ export default function PotsOverview({ pots, totalSaved }: PotsOverviewProps) {
   const displayPots = pots.slice(0, 4);
 
   return (
-    <div className="bg-white rounded-xl w-full max-w-full">
+    <div className={`${publicSans} bg-white rounded-xl w-full max-w-full`}>
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold text-slate-900">Pots</h2>
@@ -34,7 +35,7 @@ export default function PotsOverview({ pots, totalSaved }: PotsOverviewProps) {
         {/* Left Side: Total Saved Big Display */}
         <div className="flex-shrink-0">
           <p className="text-sm text-slate-500 mb-1">Total Saved</p>
-          <p className="text-4xl font-bold text-slate-900">{totalSaved}</p>
+          <p className="text-xl font-bold text-slate-900">{totalSaved}</p>
         </div>
 
         {/* Right Side: 4 Mini Pots in a Grid */}

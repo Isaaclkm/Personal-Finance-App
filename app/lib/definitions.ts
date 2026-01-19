@@ -27,10 +27,10 @@ export type Pot = {
 export type Transaction = {
   id: string;
   amount: number;
-  date: string; // ISO string format
+  date: string; 
   category: string;
-  recipient: string; // The person or company paid/received from
-  is_income: boolean; // Useful for styling (green vs black)
+  name: string; // The person or company paid/received from
+  isIncome: boolean; // Useful for styling (green vs black)
 };
 
 // Optional: Helper type for UI tables where you might need 
@@ -38,3 +38,19 @@ export type Transaction = {
 export type TransactionWithTheme = Transaction & {
   theme?: string;
 };
+
+export interface Bills {
+  id: string;
+  name: string;
+  image: string;
+  date: string;
+  amount: number;
+  isPaid: boolean;
+}
+
+export interface BillsTableProps {
+  bills: Bills[];
+  itemsPerPage?: number;
+  title?: string;
+  showPagination?: boolean;
+}
