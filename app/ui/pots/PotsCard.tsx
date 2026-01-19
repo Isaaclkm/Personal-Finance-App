@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { Pot } from '@/app/lib/definitions';
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
 import Modal from '../modal';
-import AddMoneyForm from './PotsAddMoney';
+import AddMoneyForm from './AddMoneyForm';
+import WithdrawMoneyForm from './WithdrawMoneyForm';
 
 interface PotsCardProps {
   pot: Pot;
 }
 
 export default function PotsCard({ pot }: PotsCardProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMode, setModalMode] = useState<'add' | 'withdraw' | null>(null);
   
   // Calculate percentage for progress bar and display
   const percentage = Math.min((pot.total / pot.target) * 100, 100);
@@ -57,22 +58,23 @@ export default function PotsCard({ pot }: PotsCardProps) {
       {/* Action Buttons */}
       <div className="grid grid-cols-2 gap-4">
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setModalMode('add')}
           className="py-3 px-4 bg-slate-50 text-slate-900 font-bold rounded-lg hover:bg-white border border-transparent hover:border-slate-200 transition"
         >
           + Add Money
         </button>
         <button 
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setModalMode('withdraw')}
           className="py-3 px-4 bg-slate-50 text-slate-900 font-bold rounded-lg hover:bg-white border border-transparent hover:border-slate-200 transition"
         >
           Withdraw
         </button>
       </div>
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <AddMoneyForm onClose={() => setIsModalOpen(false)} />
-      </Modal>
+    <Modal isOpen={!!modalMode} onClose={() => setModalMode(null)}>
+      {modalMode === 'add' && <AddMoneyForm pot={pot} onClose={() => setModalMode(null)} />}
+      {modalMode === 'withdraw' && <WithdrawMoneyForm pot={pot} onClose={() => setModalMode(null)} />}
+    </Modal>
     </div>
   );
 }

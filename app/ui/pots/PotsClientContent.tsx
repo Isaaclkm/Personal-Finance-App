@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Modal from "../modal";
-import CreatePotForm from "./create-pot";
+import CreatePotForm from "./create-pot-form";
 import { Pot } from "@/app/lib/definitions";
 import PotsCard from "./PotsCard";
 

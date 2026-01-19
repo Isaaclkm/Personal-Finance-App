@@ -28,6 +28,9 @@ const BudgetSchema = z.object({
 // Validation for Creating (omitting internal DB fields)
 const CreatePot = PotSchema.omit({ id: true, total: true });
 const CreateBudget = BudgetSchema.omit({ id: true, amount: true });
+const AddMoneySchema = z.object({
+  amount: z.coerce.number().gt(0, { message: 'Amount must be greater than $0.' }),
+});
 
 // Flexible State type to handle different forms
 // Base type for shared properties
@@ -59,6 +62,14 @@ export type TransactionState = BaseState & {
     is_income?: string[];
   };
 };
+
+export type WithdrawMoneyState = {
+  errors?: {
+    amount?: string[];
+  };
+  message?: string | null;
+};
+
 
 
 // --- ACTIONS ---
@@ -93,6 +104,112 @@ export async function createPot(prevState: PotState, formData: FormData) {
   revalidatePath('/dashboard/pots');
   redirect('/dashboard/pots');
 }
+export type AddMoneyState = {
+  errors?: {
+    amount?: string[];
+  };
+  message?: string | null;
+};
+
+
+export async function addMoneyToPot(
+  potId: string, 
+  target: number, // Add target as a parameter
+  prevState: AddMoneyState, 
+  formData: FormData
+): Promise<AddMoneyState> {
+  
+  const validatedFields = AddMoneySchema.safeParse({
+    amount: formData.get('amount'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Invalid amount.',
+    };
+  }
+
+  const { amount } = validatedFields.data;
+
+  try {
+    // 1. Fetch current total to verify the math on the server
+    const data = await sql`SELECT total FROM pots WHERE id = ${potId}`;
+    const currentTotal = data[0].total;
+
+    // 2. The Logic Check: Current + New vs Target
+    if (currentTotal + amount > target) {
+      return {
+        errors: {
+          amount: [`Adding $${amount} would exceed your target of $${target.toLocaleString()}.`],
+        },
+        message: 'Target exceeded.',
+      };
+    }
+
+    // 3. If check passes, perform the update
+    await sql`
+      UPDATE pots 
+      SET total = total + ${amount}
+      WHERE id = ${potId}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to add money.' };
+  }
+
+  revalidatePath('/dashboard/pots');
+  return { message: 'Success', errors: {} };
+}
+
+
+export async function withdrawMoneyFromPot(
+  potId: string, 
+  prevState: WithdrawMoneyState, 
+  formData: FormData
+): Promise<WithdrawMoneyState> {
+  
+  const validatedFields = AddMoneySchema.safeParse({
+    amount: formData.get('amount'),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Invalid amount.',
+    };
+  }
+
+  const { amount } = validatedFields.data;
+
+  try {
+    // 1. Fetch current total to verify the math on the server
+    const data = await sql`SELECT total FROM pots WHERE id = ${potId}`;
+    const currentTotal = data[0].total;
+
+    // 2. The Logic Check: Cannot withdraw more than is available
+    if (amount > currentTotal) {
+      return {
+        errors: {
+          amount: [`You only have $${currentTotal.toLocaleString()} available.`],
+        },
+        message: 'Insufficient funds.',
+      };
+    }
+
+    // 3. Perform the subtraction
+    await sql`
+      UPDATE pots 
+      SET total = total - ${amount}
+      WHERE id = ${potId}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to withdraw money.' };
+  }
+
+  revalidatePath('/dashboard/pots');
+  return { message: 'Success', errors: {} };
+}
+
 
 export async function createBudget(prevState: BudgetState, formData: FormData) {
   const validatedFields = CreateBudget.safeParse({
