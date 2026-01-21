@@ -33,25 +33,25 @@ const budgets = [
   },
 ];
 
-// const pots = [
-//   {
-//     id: 'd9620704-5f5a-4e89-980b-8d6c70f07421',
-//     name: 'Savings',
-//     target: 200000, 
-//     theme: '#277C78',
-//     total: 159000,
-//   },
-//   {
-//     id: '01d4d80a-9d9e-4712-9861-f3f508736d76',
-//     name: 'New Laptop',
-//     target: 100000,
-//     theme: '#626070',
-//     total: 10000,
-//   },
-// ];
+const pots = [
+  {
+    id: 'd9620704-5f5a-4e89-980b-8d6c70f07421',
+    name: 'Savings',
+    target: 200000, 
+    theme: '#277C78',
+    total: 159000,
+  },
+  {
+    id: '01d4d80a-9d9e-4712-9861-f3f508736d76',
+    name: 'New Laptop',
+    target: 100000,
+    theme: '#626070',
+    total: 10000,
+  },
+];
 
 // @/app/lib/data.ts
-export const TRANSACTIONS = [
+const transactions = [
   {
     id: '1',
     name: 'Emma Richardson',
@@ -59,7 +59,7 @@ export const TRANSACTIONS = [
     category: 'General',
     date: '19 Aug 2023',
     amount: 75.50,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '2',
@@ -68,7 +68,7 @@ export const TRANSACTIONS = [
     category: 'Dining Out',
     date: '19 Aug 2023',
     amount: 37.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '3',
@@ -77,7 +77,7 @@ export const TRANSACTIONS = [
     category: 'General',
     date: '18 Aug 2023',
     amount: 500.00,
-    isIncome: true,
+    is_income: true,
   },
   {
     id: '4',
@@ -86,7 +86,7 @@ export const TRANSACTIONS = [
     category: 'Bills',
     date: '17 Aug 2023',
     amount: 120.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '5',
@@ -95,7 +95,7 @@ export const TRANSACTIONS = [
     category: 'Entertainment',
     date: '17 Aug 2023',
     amount: 15.99,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '6',
@@ -104,7 +104,7 @@ export const TRANSACTIONS = [
     category: 'Personal Care',
     date: '16 Aug 2023',
     amount: 45.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '7',
@@ -113,7 +113,7 @@ export const TRANSACTIONS = [
     category: 'Shopping',
     date: '16 Aug 2023',
     amount: 399.99,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '8',
@@ -122,7 +122,7 @@ export const TRANSACTIONS = [
     category: 'Transportation',
     date: '15 Aug 2023',
     amount: 22.50,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '9',
@@ -131,7 +131,7 @@ export const TRANSACTIONS = [
     category: 'General',
     date: '14 Aug 2023',
     amount: 1000.00,
-    isIncome: true,
+    is_income: true,
   },
   {
     id: '10',
@@ -140,7 +140,7 @@ export const TRANSACTIONS = [
     category: 'Dining Out',
     date: '14 Aug 2023',
     amount: 55.20,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '11',
@@ -149,7 +149,7 @@ export const TRANSACTIONS = [
     category: 'Shopping',
     date: '13 Aug 2023',
     amount: 125.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '12',
@@ -158,7 +158,7 @@ export const TRANSACTIONS = [
     category: 'Bills',
     date: '12 Aug 2023',
     amount: 85.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '13',
@@ -167,7 +167,7 @@ export const TRANSACTIONS = [
     category: 'Personal Care',
     date: '12 Aug 2023',
     amount: 30.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '14',
@@ -176,7 +176,7 @@ export const TRANSACTIONS = [
     category: 'Entertainment',
     date: '11 Aug 2023',
     amount: 25.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '15',
@@ -185,7 +185,7 @@ export const TRANSACTIONS = [
     category: 'General',
     date: '11 Aug 2023',
     amount: 250.00,
-    isIncome: true,
+    is_income: true,
   },
    {
     id: '16',
@@ -194,7 +194,7 @@ export const TRANSACTIONS = [
     category: 'General',
     date: '19 Aug 2023',
     amount: 75.50,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '17',
@@ -203,7 +203,7 @@ export const TRANSACTIONS = [
     category: 'Dining Out',
     date: '19 Aug 2023',
     amount: 37.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '18',
@@ -212,7 +212,7 @@ export const TRANSACTIONS = [
     category: 'General',
     date: '18 Aug 2023',
     amount: 500.00,
-    isIncome: true,
+    is_income: true,
   },
   {
     id: '19',
@@ -221,7 +221,7 @@ export const TRANSACTIONS = [
     category: 'Bills',
     date: '17 Aug 2023',
     amount: 120.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '20',
@@ -230,7 +230,7 @@ export const TRANSACTIONS = [
     category: 'Entertainment',
     date: '17 Aug 2023',
     amount: 15.99,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '21',
@@ -239,7 +239,7 @@ export const TRANSACTIONS = [
     category: 'Personal Care',
     date: '16 Aug 2023',
     amount: 45.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '22',
@@ -248,7 +248,7 @@ export const TRANSACTIONS = [
     category: 'Shopping',
     date: '16 Aug 2023',
     amount: 399.99,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '23',
@@ -257,7 +257,7 @@ export const TRANSACTIONS = [
     category: 'Transportation',
     date: '15 Aug 2023',
     amount: 22.50,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '24',
@@ -266,7 +266,7 @@ export const TRANSACTIONS = [
     category: 'General',
     date: '14 Aug 2023',
     amount: 1000.00,
-    isIncome: true,
+    is_income: true,
   },
   {
     id: '25',
@@ -275,7 +275,7 @@ export const TRANSACTIONS = [
     category: 'Dining Out',
     date: '14 Aug 2023',
     amount: 55.20,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '26',
@@ -284,7 +284,7 @@ export const TRANSACTIONS = [
     category: 'Shopping',
     date: '13 Aug 2023',
     amount: 125.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '27',
@@ -293,7 +293,7 @@ export const TRANSACTIONS = [
     category: 'Bills',
     date: '12 Aug 2023',
     amount: 85.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '28',
@@ -302,7 +302,7 @@ export const TRANSACTIONS = [
     category: 'Personal Care',
     date: '12 Aug 2023',
     amount: 30.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '29',
@@ -311,7 +311,7 @@ export const TRANSACTIONS = [
     category: 'Entertainment',
     date: '11 Aug 2023',
     amount: 25.00,
-    isIncome: false,
+    is_income: false,
   },
   {
     id: '30',
@@ -320,7 +320,7 @@ export const TRANSACTIONS = [
     category: 'General',
     date: '11 Aug 2023',
     amount: 250.00,
-    isIncome: true,
+    is_income: true,
   }
 ];
 
@@ -363,4 +363,4 @@ export const BILLS = [
   },
 ]
 
-export { users, budgets };
+export { users, budgets, pots, transactions };

@@ -3,7 +3,7 @@ import { fetchPots, fetchCardData, fetchBudgets } from '@/app/lib/data';
 import PotsOverview from "@/app/ui/pots/PotsOverview";
 import BudgetOverview from "@/app/ui/budgets/BudgetOverviewProps";
 import TransactionTable from '@/app/ui/transactions/table';
-import { TRANSACTIONS } from '@/app/lib/placeholder-data';
+import { transactions } from '@/app/lib/placeholder-data';
 import { BILLS } from "@/app/lib/placeholder-data";
 import BillsTable from "@/app/ui/recurring-bills/table";
 import SummaryCard from "@/app/ui/recurring-bills/SummaryCard";
@@ -15,7 +15,7 @@ export default async function Page() {
     fetchCardData(),
   ]);
   const { totalSaved } = await fetchCardData();
-  const recentTransactions = TRANSACTIONS.slice(0, 5);
+  const recentTransactions = transactions.slice(0, 5);
 
   return (
     <main >

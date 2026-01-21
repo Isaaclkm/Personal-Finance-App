@@ -30,7 +30,7 @@ export type Transaction = {
   date: string; 
   category: string;
   name: string; // The person or company paid/received from
-  isIncome: boolean; // Useful for styling (green vs black)
+  is_income: boolean; // Useful for styling (green vs black)
 };
 
 // Optional: Helper type for UI tables where you might need 

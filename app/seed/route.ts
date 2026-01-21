@@ -80,7 +80,7 @@ async function seedTransactions() {
       amount INT NOT NULL,
       date DATE NOT NULL,
       category VARCHAR(255) NOT NULL,
-      recipient VARCHAR(255) NOT NULL,
+      name VARCHAR(255) NOT NULL,
       is_income BOOLEAN NOT NULL DEFAULT false
     );
   `;
@@ -88,7 +88,7 @@ async function seedTransactions() {
   const insertedTransactions = await Promise.all(
     transactions.map((t) => sql`
       INSERT INTO transactions (id, amount, date, category, recipient, is_income)
-      VALUES (${t.id}, ${t.amount}, ${t.date}, ${t.category}, ${t.recipient}, ${t.is_income})
+      VALUES (${t.id}, ${t.amount}, ${t.date}, ${t.category}, ${t.name}, ${t.is_income})
       ON CONFLICT (id) DO NOTHING;
     `),
   );

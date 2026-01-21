@@ -12,7 +12,7 @@ interface Transaction {
   category: string;
   date: string;
   amount: number;
-  isIncome: boolean;
+  is_income: boolean;
 }
 
 interface TransactionTableProps {
@@ -142,8 +142,8 @@ export default function TransactionTable({
                     </div>
                     <span className="text-slate-500 text-sm">{tx.category}</span>
                     <span className="text-slate-500 text-sm">{tx.date}</span>
-                    <span className={`text-right font-bold text-sm ${tx.isIncome ? 'text-emerald-600' : 'text-slate-900'}`}>
-                      {tx.isIncome ? `+$${tx.amount.toFixed(2)}` : `-$${tx.amount.toFixed(2)}`}
+                    <span className={`text-right font-bold text-sm ${tx.is_income ? 'text-emerald-600' : 'text-slate-900'}`}>
+                      {tx.is_income ? `+$${tx.amount.toFixed(2)}` : `-$${tx.amount.toFixed(2)}`}
                     </span>
                   </div>
                 ))}
@@ -162,8 +162,8 @@ export default function TransactionTable({
                   <span className="font-bold text-slate-900 text-sm">{tx.name}</span>
                 </div>
                 <div className="flex flex-col items-end gap-1">
-                  <span className={`font-bold text-sm ${tx.isIncome ? 'text-emerald-600' : 'text-slate-900'}`}>
-                    {tx.isIncome ? `+$${tx.amount.toFixed(2)}` : `-$${tx.amount.toFixed(2)}`}
+                  <span className={`font-bold text-sm ${tx.is_income ? 'text-emerald-600' : 'text-slate-900'}`}>
+                    {tx.is_income ? `+$${tx.amount.toFixed(2)}` : `-$${tx.amount.toFixed(2)}`}
                   </span>
                   <span className="text-xs text-slate-500">{tx.date}</span>
                 </div>
