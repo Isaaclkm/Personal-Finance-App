@@ -4,8 +4,77 @@ import postgres from 'postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
+import bcrypt from 'bcrypt';
+ 
+// ...
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
+
+// 1. Add this to your SCHEMAS section
+const UserSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+// 2. Updated signUp function using your 'sql' constant
+export async function signUp(prevState: string | undefined, formData: FormData) {
+  const validatedFields = UserSchema.safeParse(Object.fromEntries(formData));
+
+  if (!validatedFields.success) {
+    return 'Invalid fields. Please check your inputs.';
+  }
+
+  const { name, email, password } = validatedFields.data;
+
+  try {
+    // Check if user already exists using your 'sql' tag
+    const existingUser = await sql`
+      SELECT * FROM users WHERE email = ${email}
+    `;
+
+    if (existingUser.length > 0) {
+      return 'An account with this email already exists.';
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert the new user
+
+    await sql`
+      INSERT INTO users (name, email, password)
+      VALUES (${name}, ${email}, ${hashedPassword})
+    `;
+
+  } catch (error) {
+    console.error('Database error:', error);
+    return 'Failed to create account. Please try again.';
+  }
+
+  // Redirect is outside the try/catch
+  redirect('/login');
+}
 
 // --- SCHEMAS ---
 
