@@ -5,7 +5,8 @@ import { users, budgets, pots, transactions } from '../lib/placeholder-data';
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 async function seedUsers() {
-  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+  await sql`
+  CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
   await sql`
     CREATE TABLE IF NOT EXISTS users (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -73,48 +74,27 @@ async function seedPots() {
   return insertedPots;
 }
 
-async function seedTransactions() {
-  await sql`
-    CREATE TABLE IF NOT EXISTS transactions (
-      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-      amount INT NOT NULL,
-      date DATE NOT NULL,
-      category VARCHAR(255) NOT NULL,
-      name VARCHAR(255) NOT NULL,
-      is_income BOOLEAN NOT NULL DEFAULT false
-    );
-  `;
-
-  const insertedTransactions = await Promise.all(
-    transactions.map((t) => sql`
-      INSERT INTO transactions (id, amount, date, category, recipient, is_income)
-      VALUES (${t.id}, ${t.amount}, ${t.date}, ${t.category}, ${t.name}, ${t.is_income})
-      ON CONFLICT (id) DO NOTHING;
-    `),
-  );
-
-  return insertedTransactions;
-}
-
 export async function GET() {
   try {
-    // 1. Drop tables individually (outside the transaction helper)
-    // This breaks any locks from previous failed attempts
-    await sql`DROP TABLE IF EXISTS transactions CASCADE`;
+    // ONLY drop the tables you want to reset. 
+    // If you want to keep transactions as they are, remove it from this list.
     await sql`DROP TABLE IF EXISTS budgets CASCADE`;
     await sql`DROP TABLE IF EXISTS pots CASCADE`;
 
-    // 2. Run seeds one by one
-    await seedUsers();
-    console.log('Users seeded');
+    // Seed the essentials
+    await seedUsers(); // ON CONFLICT (id) DO NOTHING ensures you don't duplicate users
+    console.log('Users checked/seeded');
+    
     await seedBudgets();
     console.log('Budgets seeded');
+    
     await seedPots();
     console.log('Pots seeded');
-    await seedTransactions();
-    console.log('Transactions seeded');
 
-    return Response.json({ message: 'Database seeded successfully' });
+    // Commented out or deleted if not needed:
+    // await seedTransactions(); 
+
+    return Response.json({ message: 'Essential tables seeded successfully' });
   } catch (error: any) {
     console.error('Seeding Error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });

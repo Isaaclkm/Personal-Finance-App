@@ -26,6 +26,7 @@ async function getUser(email: string): Promise<User | undefined> {
     console.error('Failed to fetch user:', error);
     return undefined;
   }
+  console.log('DB HOST:', process.env.POSTGRES_URL_NON_POOLING);
 }
 
 export const { auth, signIn, signOut } = NextAuth({
