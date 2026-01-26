@@ -1,16 +1,15 @@
 import bcrypt from 'bcrypt';
-import postgres from 'postgres';
-import { users, budgets, pots, transactions } from '../lib/placeholder-data';
-
+import { users, budgets, pots } from '../lib/placeholder-data';
 import { getSql } from '../lib/db';
 
+export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-const sql = getSql();
+/* -------------------- SEED FUNCTIONS -------------------- */
 
-async function seedUsers() {
-  await sql`
-  CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+async function seedUsers(sql: ReturnType<typeof getSql>) {
+  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
   await sql`
     CREATE TABLE IF NOT EXISTS users (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -20,7 +19,7 @@ async function seedUsers() {
     );
   `;
 
-  const insertedUsers = await Promise.all(
+  await Promise.all(
     users.map(async (user) => {
       const hashedPassword = await bcrypt.hash(user.password, 10);
       return sql`
@@ -28,13 +27,11 @@ async function seedUsers() {
         VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
         ON CONFLICT (id) DO NOTHING;
       `;
-    }),
+    })
   );
-
-  return insertedUsers;
 }
 
-async function seedBudgets() {
+async function seedBudgets(sql: ReturnType<typeof getSql>) {
   await sql`
     CREATE TABLE IF NOT EXISTS budgets (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -45,18 +42,24 @@ async function seedBudgets() {
     );
   `;
 
-  const insertedBudgets = await Promise.all(
-    budgets.map((budget) => sql`
-      INSERT INTO budgets (id, category, maximum_spend, theme, amount)
-      VALUES (${budget.id}, ${budget.category}, ${budget.maximum_spend}, ${budget.theme}, ${budget.amount})
-      ON CONFLICT (id) DO NOTHING;
-    `),
+  await Promise.all(
+    budgets.map((budget) =>
+      sql`
+        INSERT INTO budgets (id, category, maximum_spend, theme, amount)
+        VALUES (
+          ${budget.id},
+          ${budget.category},
+          ${budget.maximum_spend},
+          ${budget.theme},
+          ${budget.amount}
+        )
+        ON CONFLICT (id) DO NOTHING;
+      `
+    )
   );
-
-  return insertedBudgets;
 }
 
-async function seedPots() {
+async function seedPots(sql: ReturnType<typeof getSql>) {
   await sql`
     CREATE TABLE IF NOT EXISTS pots (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -67,40 +70,51 @@ async function seedPots() {
     );
   `;
 
-  const insertedPots = await Promise.all(
-    pots.map((pot) => sql`
-      INSERT INTO pots (id, name, target, theme, total)
-      VALUES (${pot.id}, ${pot.name}, ${pot.target}, ${pot.theme}, ${pot.total})
-      ON CONFLICT (id) DO NOTHING;
-    `),
+  await Promise.all(
+    pots.map((pot) =>
+      sql`
+        INSERT INTO pots (id, name, target, theme, total)
+        VALUES (
+          ${pot.id},
+          ${pot.name},
+          ${pot.target},
+          ${pot.theme},
+          ${pot.total}
+        )
+        ON CONFLICT (id) DO NOTHING;
+      `
+    )
   );
-
-  return insertedPots;
 }
 
+/* -------------------- ROUTE HANDLER -------------------- */
+
 export async function GET() {
+  const sql = getSql(); // ✅ runtime-only DB connection
+
   try {
-    // ONLY drop the tables you want to reset. 
-    // If you want to keep transactions as they are, remove it from this list.
+    // Reset only what you want
     await sql`DROP TABLE IF EXISTS budgets CASCADE`;
     await sql`DROP TABLE IF EXISTS pots CASCADE`;
 
-    // Seed the essentials
-    await seedUsers(); // ON CONFLICT (id) DO NOTHING ensures you don't duplicate users
+    // Seed
+    await seedUsers(sql);
     console.log('Users checked/seeded');
-    
-    await seedBudgets();
+
+    await seedBudgets(sql);
     console.log('Budgets seeded');
-    
-    await seedPots();
+
+    await seedPots(sql);
     console.log('Pots seeded');
 
-    // Commented out or deleted if not needed:
-    // await seedTransactions(); 
-
-    return Response.json({ message: 'Essential tables seeded successfully' });
+    return Response.json({
+      message: 'Essential tables seeded successfully',
+    });
   } catch (error: any) {
     console.error('Seeding Error:', error.message);
-    return Response.json({ error: error.message }, { status: 500 });
+    return Response.json(
+      { error: error.message },
+      { status: 500 }
+    );
   }
 }
