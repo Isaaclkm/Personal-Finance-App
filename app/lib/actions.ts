@@ -9,7 +9,10 @@ import { AuthError } from 'next-auth';
 import bcrypt from 'bcrypt';
  
 // ...
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+import { getSql } from '@/app/lib/db';
+
+const sql = getSql();
+
 
 export async function authenticate(
   prevState: string | undefined,
