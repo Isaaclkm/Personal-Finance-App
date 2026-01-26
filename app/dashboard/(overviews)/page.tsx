@@ -7,6 +7,8 @@ import { transactions } from '@/app/lib/placeholder-data';
 import { BILLS } from "@/app/lib/placeholder-data";
 import BillsTable from "@/app/ui/recurring-bills/table";
 import SummaryCard from "@/app/ui/recurring-bills/SummaryCard";
+export const dynamic = 'force-dynamic';
+
 
 export default async function Page() {
   const [pots, budgets, cardData] = await Promise.all([
