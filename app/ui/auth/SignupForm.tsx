@@ -79,7 +79,7 @@ export default function SignUpForm() {
 
               <p className="text-center text-gray-600 text-sm">
                 Already have an account?{' '}
-                <Link href="/login" className="text-gray-900 font-semibold underline">Login</Link>
+                <Link href="/" className="text-gray-900 font-semibold underline">Login</Link>
               </p>
             </form>
           </div>

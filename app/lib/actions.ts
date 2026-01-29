@@ -76,7 +76,7 @@ export async function signUp(prevState: string | undefined, formData: FormData) 
   }
 
   // Redirect is outside the try/catch
-  redirect('/login');
+  redirect('/');
 }
 
 // --- SCHEMAS ---
