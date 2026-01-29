@@ -33,7 +33,13 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
+      },
       async authorize(credentials) {
+        if (!credentials) return null;
+
         const parsed = z
           .object({
             email: z.string().email(),
@@ -48,7 +54,10 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         if (!user) return null;
 
         const ok = await bcrypt.compare(password, user.password);
-        return ok ? user : null;
+        if (!ok) return null;
+
+        const { password: _, ...safeUser } = user;
+        return safeUser;
       },
     }),
   ],
