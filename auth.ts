@@ -16,7 +16,6 @@ function getSql() {
 
 async function getUser(email: string): Promise<User | undefined> {
   const sql = getSql();
-
   try {
     const users = await sql<User[]>`
       SELECT * FROM users WHERE email = ${email}
@@ -24,9 +23,10 @@ async function getUser(email: string): Promise<User | undefined> {
     return users[0];
   } catch (error) {
     console.error('Failed to fetch user:', error);
-    return undefined;
+    throw error; // Re-throw to handle it properly
+  } finally {
+    await sql.end(); // ✅ IMPORTANT: Close connection
   }
-  console.log('DB HOST:', process.env.POSTGRES_URL_NON_POOLING);
 }
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
