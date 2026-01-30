@@ -24,9 +24,7 @@ async function getUser(email: string): Promise<User | undefined> {
   } catch (error) {
     console.error('Failed to fetch user:', error);
     throw error; // Re-throw to handle it properly
-  } finally {
-    await sql.end(); // ✅ IMPORTANT: Close connection
-  }
+  } 
 }
 
 export const { auth, signIn, signOut, handlers } = NextAuth({

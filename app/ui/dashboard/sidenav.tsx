@@ -4,6 +4,8 @@ import AcmeLogo from '@/app/ui/acme-logo';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import { publicSans } from '../fonts';
 import Image from 'next/image';
+import { signOut } from '@/auth';
+
 
 export default function SideNav() {
   return (
@@ -36,12 +38,16 @@ export default function SideNav() {
       </div>
 
       {/* Sign out */}
-      {/* <form className="hidden md:block mt-auto w-full">
+      <form className="hidden md:block mt-auto w-full"
+        action={async () => {
+              'use server';
+              await signOut({ redirectTo: '/' });
+            }}>
         <button className="flex h-[48px] w-full items-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600">
           <PowerIcon className="w-6" />
           <span>Sign Out</span>
         </button>
-      </form> */}
+      </form>
     </nav>
   );
 }

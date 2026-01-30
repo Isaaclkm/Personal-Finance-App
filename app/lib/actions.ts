@@ -12,16 +12,14 @@ import { getSql } from '@/app/lib/db';
 
 const sql = getSql();
 
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 
-export async function authenticate(
-  prevState: string | undefined,
-  formData: FormData,
-) {
+export async function authenticate(prevState: string | undefined, formData: FormData) {
   try {
-    console.log('🔐 Attempting login...'); // Debug log
     await signIn('credentials', formData);
   } catch (error) {
-    console.error('❌ Authentication error:', error); // Debug log
+    // If it's a redirect error, re-throw it so Next.js can do its job
+    if (isRedirectError(error)) throw error;
     
     if (error instanceof AuthError) {
       switch (error.type) {
