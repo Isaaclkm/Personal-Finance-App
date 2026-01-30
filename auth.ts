@@ -31,9 +31,6 @@ async function getUser(email: string): Promise<User | undefined> {
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
-    session: {
-    strategy: 'jwt',
-  },
   providers: [
     Credentials({
       credentials: {
@@ -41,7 +38,12 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials) return null;
+        console.log('🔍 Authorize called with:', { email: credentials?.email }); // Debug log
+        
+        if (!credentials) {
+          console.log('❌ No credentials provided');
+          return null;
+        }
 
         const parsed = z
           .object({
@@ -50,17 +52,35 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           })
           .safeParse(credentials);
 
-        if (!parsed.success) return null;
+        if (!parsed.success) {
+          console.log('❌ Validation failed:', parsed.error);
+          return null;
+        }
 
         const { email, password } = parsed.data;
-        const user = await getUser(email);
-        if (!user) return null;
+        
+        try {
+          const user = await getUser(email);
+          
+          if (!user) {
+            console.log('❌ User not found');
+            return null;
+          }
 
-        const ok = await bcrypt.compare(password, user.password);
-        if (!ok) return null;
+          const ok = await bcrypt.compare(password, user.password);
+          
+          if (!ok) {
+            console.log('❌ Password mismatch');
+            return null;
+          }
 
-        const { password: _, ...safeUser } = user;
-        return safeUser;
+          console.log('✅ Login successful');
+          const { password: _, ...safeUser } = user;
+          return safeUser;
+        } catch (error) {
+          console.error('❌ Error during authorization:', error);
+          return null;
+        }
       },
     }),
   ],

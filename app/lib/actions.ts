@@ -18,12 +18,11 @@ export async function authenticate(
   formData: FormData,
 ) {
   try {
-    await signIn('credentials', {
-      email: formData.get('email'),
-      password: formData.get('password'),
-      redirect: false,
-    });
+    console.log('🔐 Attempting login...'); // Debug log
+    await signIn('credentials', formData);
   } catch (error) {
+    console.error('❌ Authentication error:', error); // Debug log
+    
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
@@ -36,25 +35,23 @@ export async function authenticate(
   }
 }
 
-// 1. Add this to your SCHEMAS section
 const UserSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-// 2. Updated signUp function using your 'sql' constant
 export async function signUp(prevState: string | undefined, formData: FormData) {
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData));
-
+  
   if (!validatedFields.success) {
     return 'Invalid fields. Please check your inputs.';
   }
 
   const { name, email, password } = validatedFields.data;
+  const sql = getSql();
 
   try {
-    // Check if user already exists using your 'sql' tag
     const existingUser = await sql`
       SELECT * FROM users WHERE email = ${email}
     `;
@@ -63,22 +60,19 @@ export async function signUp(prevState: string | undefined, formData: FormData) 
       return 'An account with this email already exists.';
     }
 
-    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Insert the new user
 
     await sql`
       INSERT INTO users (name, email, password)
       VALUES (${name}, ${email}, ${hashedPassword})
     `;
-
   } catch (error) {
     console.error('Database error:', error);
     return 'Failed to create account. Please try again.';
+  } finally {
+    await sql.end(); // ✅ Close connection
   }
 
-  // Redirect is outside the try/catch
   redirect('/');
 }
 
