@@ -41,17 +41,16 @@ const UserSchema = z.object({
 
 export async function signUp(prevState: string | undefined, formData: FormData) {
   const validatedFields = UserSchema.safeParse(Object.fromEntries(formData));
-  
+
   if (!validatedFields.success) {
     return 'Invalid fields. Please check your inputs.';
   }
 
   const { name, email, password } = validatedFields.data;
-  const sql = getSql();
 
   try {
     const existingUser = await sql`
-      SELECT * FROM users WHERE email = ${email}
+      SELECT 1 FROM users WHERE email = ${email}
     `;
 
     if (existingUser.length > 0) {
@@ -64,15 +63,21 @@ export async function signUp(prevState: string | undefined, formData: FormData) 
       INSERT INTO users (name, email, password)
       VALUES (${name}, ${email}, ${hashedPassword})
     `;
+
+    // ✅ AUTO LOGIN AFTER SIGNUP
+    await signIn('credentials', {
+      email,
+      password,
+      redirect: true,
+      callbackUrl: '/',
+    });
+
   } catch (error) {
     console.error('Database error:', error);
     return 'Failed to create account. Please try again.';
-  } finally {
-    await sql.end(); // ✅ Close connection
   }
-
-  redirect('/');
 }
+
 
 // --- SCHEMAS ---
 
