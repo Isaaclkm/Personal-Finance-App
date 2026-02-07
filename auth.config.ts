@@ -5,19 +5,31 @@ export const authConfig = {
     signIn: '/',
   },
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
-      
-      if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // This will redirect to signIn page
-      } else if (isLoggedIn) {
-        // ✅ Fixed: Return a redirect response instead of just returning it
-        return Response.redirect(new URL('/dashboard', nextUrl));
-      }
+  authorized({ auth, request: { nextUrl } }) {
+    const { pathname } = nextUrl;
+
+    // ✅ Allow static assets & images
+    if (
+      pathname.startsWith('/_next') ||
+      pathname.startsWith('/assets') ||
+      pathname === '/favicon.ico'
+    ) {
       return true;
-    },
+    }
+
+    const isLoggedIn = !!auth?.user;
+    const isOnDashboard = pathname.startsWith('/dashboard');
+
+    if (isOnDashboard) {
+      return isLoggedIn;
+    }
+
+    if (isLoggedIn) {
+      return Response.redirect(new URL('/dashboard', nextUrl));
+    }
+
+    return true;
   },
+},
   providers: [],
 } satisfies NextAuthConfig;
