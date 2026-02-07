@@ -64,7 +64,7 @@ export async function signUp(prevState: string | undefined, formData: FormData) 
       VALUES (${name}, ${email}, ${hashedPassword})
     `;
 
-    // ✅ AUTO LOGIN AFTER SIGNUP
+    // Trigger the login
     await signIn('credentials', {
       email,
       password,
@@ -73,6 +73,10 @@ export async function signUp(prevState: string | undefined, formData: FormData) 
     });
 
   } catch (error) {
+    // 1. ADD THIS CHECK:
+    // If it's a redirect error from signIn, re-throw it so Next.js handles the move
+    if (isRedirectError(error)) throw error;
+
     console.error('Database error:', error);
     return 'Failed to create account. Please try again.';
   }

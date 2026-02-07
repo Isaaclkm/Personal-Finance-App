@@ -5,7 +5,7 @@ import { PowerIcon } from '@heroicons/react/24/outline';
 import { publicSans } from '../fonts';
 import Image from 'next/image';
 import { signOut } from '@/auth';
-
+import logo from '../../../public/assets/images/logo-large.svg'
 
 export default function SideNav() {
   return (
@@ -24,7 +24,7 @@ export default function SideNav() {
       >
         <div className="w-32 m-3 text-[#B3B3B3]">
           <Image 
-          src="/assets/images/logo-large.svg"
+          src={logo}
           width= {75}
           height = {65}
           alt= "logo"
