@@ -36,7 +36,7 @@ export default function NavLinks() {
           <Link
             key={link.name}
             href={link.href}
-           className={clsx(
+            className={clsx(
               // Base styles
               'group flex h-[48px] grow items-center justify-center gap-2 rounded-r-xl p-3 text-sm font-medium transition-all md:flex-none md:justify-start md:p-2 md:px-3',
               // Default (Inactive) state

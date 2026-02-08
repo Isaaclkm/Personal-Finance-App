@@ -6,6 +6,7 @@ import { publicSans } from '../fonts';
 import Image from 'next/image';
 import { signOut } from '@/auth';
 import logo from '../../../public/assets/images/logo-large.svg'
+import clsx from 'clsx';
 
 export default function SideNav() {
   return (
@@ -14,7 +15,7 @@ export default function SideNav() {
         fixed bottom-0 left-0 z-50
         flex w-full items-center justify-around
         border-t bg-[#201F24] pr-3 py-2
-        md:static md:h-full md:w-[80%] md:flex-col md:justify-start md:border-none
+        md:static md:h-full md:w-[100%] md:flex-col md:justify-start md:border-none
       "
     >
       {/* Logo — hidden on mobile */}
@@ -43,7 +44,13 @@ export default function SideNav() {
               'use server';
               await signOut({ redirectTo: '/' });
             }}>
-        <button className="flex h-[48px] w-full items-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600">
+        <button 
+          className={clsx(
+                        // Base styles
+                        'group flex h-[48px] grow items-center justify-center gap-2 rounded-r-xl p-3 text-sm font-medium transition-all md:flex-none md:justify-start md:p-2 md:px-3',
+                        // Default (Inactive) state
+                        'bg-[#201F24] text-[#B3B3B3] hover:bg-[#F8F4F0] hover:text-[#201F24]',
+                      )}>
           <PowerIcon className="w-6" />
           <span>Sign Out</span>
         </button>

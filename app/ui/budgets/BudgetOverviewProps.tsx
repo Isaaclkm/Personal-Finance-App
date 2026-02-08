@@ -94,14 +94,18 @@ export default function BudgetOverview({ budgets }: BudgetOverviewProps) {
         {/* Responsive Legend: 2 columns on mobile, 1 column on desktop */}
         <div className="grid grid-cols-2 lg:grid-cols-1 gap-4 w-full">
           {budgets.slice(0, 4).map((budget) => (
-            <div key={budget.id} className="flex items-center gap-4">
+            <div key={budget.id} className="flex items-center gap-4 min-w-0">
               <div 
                 className="w-1 h-10 rounded-full flex-shrink-0" 
                 style={{ backgroundColor: budget.theme }}
               />
-              <div className="flex flex-col">
-                <span className="text-xs text-slate-500">{budget.category}</span>
-                <span className="text-sm font-bold text-slate-900">${budget.maximum_spend}</span>
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs text-slate-500 truncate">
+                  {budget.category}
+                </span>
+                <span className="text-sm font-bold text-slate-900 whitespace-nowrap">
+                  ${budget.maximum_spend}
+                </span>
               </div>
             </div>
           ))}
